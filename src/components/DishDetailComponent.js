@@ -1,14 +1,23 @@
-import React from "react";
+/* eslint-disable react/jsx-pascal-case */
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import {
-  Card,
-  CardImg,
-  CardText,
-  CardBody,
-  CardTitle,
   Breadcrumb,
   BreadcrumbItem,
+  Button,
+  Card,
+  CardBody,
+  CardImg,
+  CardText,
+  CardTitle,
+  Col,
+  Label,
+  Modal,
+  ModalBody,
+  ModalHeader,
+  Row,
 } from "reactstrap";
-import { Link } from "react-router-dom";
+import { Control, LocalForm, Errors } from "react-redux-form";
 
 function RenderDish({ dish }) {
   if (dish != null)
@@ -45,9 +54,139 @@ function RenderComments({ comments }) {
       <div>
         <h4>Comments</h4>
         <ul class="list-unstyled">{commentsList}</ul>
+        <CommentForm></CommentForm>
       </div>
     );
   } else return <div></div>;
+}
+
+const required = (val) => val && val.length;
+const maxLength = (len) => (val) => !val || val.length <= len;
+const minLength = (len) => (val) => val && val.length >= len;
+
+class CommentForm extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isModalOpen: false,
+    };
+    this.toggleSubmitCommentModal = this.toggleSubmitCommentModal.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  toggleSubmitCommentModal() {
+    this.setState({
+      isModalOpen: !this.state.isModalOpen,
+    });
+  }
+
+  handleSubmit(values) {
+    console.log("Current State is: " + JSON.stringify(values));
+    alert("Current State is: " + JSON.stringify(values));
+    // event.preventDefault();
+  }
+
+  render() {
+    return (
+      <div>
+        <Button outline onClick={this.toggleSubmitCommentModal}>
+          <span className="fa fa-edit fa-lg"></span> Submit Comment
+        </Button>
+        <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
+          <ModalHeader toggle={this.toggleSubmitCommentModal}>
+            Submit Comment
+          </ModalHeader>
+          <ModalBody>
+            <LocalForm onSubmit={(values) => this.handleSubmit(values)}>
+              <Row className="form-group">
+                <Label htmlFor="rating" md={12}>
+                  First Name
+                </Label>
+                <Col md={12}>
+                  <Control.select
+                    model=".rating"
+                    id="rating"
+                    name="rating"
+                    placeholder="Select option"
+                    className="form-control"
+                    validators={{
+                      required,
+                    }}
+                  >
+                    <option value="1" selected>
+                      1
+                    </option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">5</option>
+                    <option value="5">5</option>
+                  </Control.select>
+                  <Errors
+                    className="text-danger"
+                    model=".rating"
+                    show="touched"
+                    messages={{
+                      required: "Required",
+                    }}
+                  />
+                </Col>
+              </Row>
+              <Row className="form-group">
+                <Label htmlFor="author" md={12}>
+                  Your Name
+                </Label>
+                <Col md={12}>
+                  <Control.text
+                    model=".author"
+                    id="author"
+                    name="author"
+                    placeholder="Your Name"
+                    className="form-control"
+                    validators={{
+                      required,
+                      minLength: minLength(3),
+                      maxLength: maxLength(15),
+                    }}
+                  />
+                  <Errors
+                    className="text-danger"
+                    model=".author"
+                    show="touched"
+                    messages={{
+                      required: "Required",
+                      minLength: "Must be greater than 2 characters",
+                      maxLength: "Must be 15 characters or less",
+                    }}
+                  />
+                </Col>
+              </Row>
+              <Row className="form-group">
+                <Label htmlFor="comment" md={12}>
+                  Comment
+                </Label>
+                <Col md={12}>
+                  <Control.textarea
+                    model=".comment"
+                    id="comment"
+                    name="comment"
+                    rows="6"
+                    className="form-control"
+                  />
+                </Col>
+              </Row>
+              <Row className="form-group">
+                <Col md={{ size: 12 }}>
+                  <Button type="submit" color="primary">
+                    Submit
+                  </Button>
+                </Col>
+              </Row>
+            </LocalForm>
+          </ModalBody>
+        </Modal>
+      </div>
+    );
+  }
 }
 
 const DishDetail = (props) => {
