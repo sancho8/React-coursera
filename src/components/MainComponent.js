@@ -10,6 +10,7 @@ import Home from "./HomeComponent";
 import Menu from "./MenuComponent";
 import Contact from "./ContactComponent";
 import DishDetail from "./DishDetailComponent";
+import About from "./AboutComponent";
 
 class Main extends Component {
   constructor(props) {
@@ -56,6 +57,11 @@ class Main extends Component {
         <Header />
         <Switch>
           <Route path="/home" component={HomePage} />
+          <Route
+            exact
+            path="/aboutus"
+            component={() => <About leaders={this.state.leaders} />}
+          />
           <Route
             exact
             path="/menu"
