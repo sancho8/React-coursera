@@ -18,7 +18,7 @@ import {
   Row,
 } from "reactstrap";
 import { Loading } from "./LoadingComponent";
-import { Control, LocalForm, Errors } from "react-redux-form";
+import { Control, Form, Errors, actions } from "react-redux-form";
 
 function RenderDish({ dish }) {
   if (dish != null)
@@ -82,12 +82,6 @@ class CommentForm extends Component {
   }
 
   handleSubmit(values) {
-    this.props.addComment(
-      this.props.dishId,
-      values.rating,
-      values.author,
-      values.comment
-    );
     console.log("Current State is: " + JSON.stringify(values));
     alert("Current State is: " + JSON.stringify(values));
     // event.preventDefault();
@@ -104,7 +98,10 @@ class CommentForm extends Component {
             Submit Comment
           </ModalHeader>
           <ModalBody>
-            <LocalForm onSubmit={(values) => this.handleSubmit(values)}>
+            <Form
+              model="feedback"
+              onSubmit={(values) => this.handleSubmit(values)}
+            >
               <Row className="form-group">
                 <Label htmlFor="rating" md={12}>
                   First Name
@@ -188,7 +185,7 @@ class CommentForm extends Component {
                   </Button>
                 </Col>
               </Row>
-            </LocalForm>
+            </Form>
           </ModalBody>
         </Modal>
       </div>
